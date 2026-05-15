@@ -16,7 +16,7 @@ const PORT = process.env.PORT || 5000;
 // 🚨 THE BOUNCER: Only allow requests from these specific websites
 const allowedOrigins = [
   'http://localhost:5173', // Your local React app for testing
-  'https://your-future-domain.vercel.app' // We will change this to your real URL later!
+  'https://ai-interviewer-ashy-beta.vercel.app/' // We will change this to your real URL later!
 ];
 
 app.use(cors({
