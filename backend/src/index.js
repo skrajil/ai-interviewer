@@ -12,7 +12,6 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-const cors = require('cors');
 
 // 🚨 THE BOUNCER: Only allow requests from these specific websites
 const allowedOrigins = [
