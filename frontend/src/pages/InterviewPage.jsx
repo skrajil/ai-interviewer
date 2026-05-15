@@ -52,11 +52,11 @@ export default function InterviewPage() {
     if (!currentQuestion && role && !preloadedQuestion) {
       const fetchFirstQuestion = async () => {
         try {
-          const response = await fetch('http://localhost:5000/api/interview/next', {
+          const response = await fetch(import.meta.env.VITE_API_URL + '/api/interview/next', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
-              role, 
+              role,
               resumeText, 
               currentQuestion: "", 
               userAnswer: "", 
@@ -91,7 +91,7 @@ export default function InterviewPage() {
     addInteraction(currentQuestion, text);
 
     try {
-      const response = await fetch('http://localhost:5000/api/interview/next', {
+      const response = await fetch(import.meta.env.VITE_API_URL + '/api/interview/next', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -125,7 +125,7 @@ export default function InterviewPage() {
       setIsSaving(true);
       setStatus('AI is analyzing your performance...');
       
-      const response = await fetch('http://localhost:5000/api/evaluate', {
+      const response = await fetch(import.meta.env.VITE_API_URL + '/api/evaluate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
