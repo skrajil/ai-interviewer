@@ -1,27 +1,64 @@
-import React, { createContext, useState, useContext } from 'react';
-import { db } from '../firebase'; // Import your Firestore instance
+import React, { createContext, useState, useContext, useEffect } from 'react'; // 🚨 Added useEffect here
+import { db } from '../firebase'; 
 import { collection, addDoc, serverTimestamp, deleteDoc, doc } from 'firebase/firestore'; 
-import { useAuth } from './AuthContext'; // To link the interview to the user
+import { useAuth } from './AuthContext'; 
 
 const InterviewContext = createContext();
 
 export const useInterview = () => useContext(InterviewContext);
 
 export const InterviewProvider = ({ children }) => {
-  const { currentUser } = useAuth(); // Access the logged-in user
+  const { currentUser } = useAuth(); 
 
-  // --- Existing State ---
-  const [role, setRole] = useState('');
-  const [resumeText, setResumeText] = useState('');
-  const [sessionHistory, setSessionHistory] = useState([]); 
-  const [currentQuestion, setCurrentQuestion] = useState("");
-  const [difficulty, setDifficulty] = useState("Mid-Level");
+  // --- 1. UPGRADED STATE: Read from sessionStorage on load ---
+  const [role, setRole] = useState(() => {
+    return sessionStorage.getItem('interviewRole') || '';
+  });
+
+  const [resumeText, setResumeText] = useState(() => {
+    return sessionStorage.getItem('interviewResumeText') || '';
+  });
+
+  const [currentQuestion, setCurrentQuestion] = useState(() => {
+    return sessionStorage.getItem('interviewCurrentQuestion') || '';
+  });
+
+  const [difficulty, setDifficulty] = useState(() => {
+    return sessionStorage.getItem('interviewDifficulty') || 'Mid-Level';
+  });
+
+  const [sessionHistory, setSessionHistory] = useState(() => {
+    const savedHistory = sessionStorage.getItem('interviewHistory');
+    return savedHistory ? JSON.parse(savedHistory) : [];
+  });
+
+  // --- 2. AUTOSAVE: Write to sessionStorage whenever state changes ---
+  useEffect(() => {
+    sessionStorage.setItem('interviewRole', role);
+  }, [role]);
+
+  useEffect(() => {
+    sessionStorage.setItem('interviewResumeText', resumeText);
+  }, [resumeText]);
+
+  useEffect(() => {
+    sessionStorage.setItem('interviewCurrentQuestion', currentQuestion);
+  }, [currentQuestion]);
+
+  useEffect(() => {
+    sessionStorage.setItem('interviewDifficulty', difficulty);
+  }, [difficulty]);
+
+  useEffect(() => {
+    sessionStorage.setItem('interviewHistory', JSON.stringify(sessionHistory));
+  }, [sessionHistory]);
+
   // --- Helper to track the conversation ---
   const addInteraction = (question, answer) => {
     setSessionHistory(prev => [...prev, { question, answer }]);
   };
 
-  // --- NEW: Save the Final Results to Firebase ---
+  // --- Save Final Results to Firebase ---
   const saveInterviewResult = async (finalScore, feedbackSummary) => {
     if (!currentUser) {
       console.error("No user found! Cannot save to database.");
@@ -29,34 +66,37 @@ export const InterviewProvider = ({ children }) => {
     }
 
     try {
-      // We save EVERYTHING: who they are, what they applied for, and the full transcript
       const docRef = await addDoc(collection(db, 'interviews'), {
         userId: currentUser.uid,
         userEmail: currentUser.email,
         role: role,
         score: finalScore,
         summary: feedbackSummary,
-        transcript: sessionHistory, // This saves every Q&A pair from your state
+        transcript: sessionHistory, 
         createdAt: serverTimestamp(),
       });
 
       console.log("Interview archived successfully! ID:", docRef.id);
+      
+      // 🚨 NEW: Wipe the temporary memory clean so the next interview starts fresh!
+      sessionStorage.clear();
+
       return docRef.id;
     } catch (error) {
       console.error("Firestore Save Error:", error);
       throw error;
     }
   };
-  // 🗑️ Delete an interview from Firebase
+
+  // --- Delete an interview from Firebase ---
   const deleteInterview = async (interviewId) => {
     try {
       const isConfirmed = window.confirm("Are you sure you want to delete this interview record? This cannot be undone.");
       if (!isConfirmed) return false;
 
-      // Find the specific document in the 'interviews' collection and delete it
       await deleteDoc(doc(db, 'interviews', interviewId));
       console.log("Interview deleted successfully!");
-      return true; // Tells the frontend the deletion worked
+      return true; 
     } catch (error) {
       console.error("Error deleting interview:", error);
       return false;
@@ -70,7 +110,7 @@ export const InterviewProvider = ({ children }) => {
       sessionHistory, addInteraction,
       currentQuestion, setCurrentQuestion,
       difficulty, setDifficulty,
-      saveInterviewResult, deleteInterview // Export this so the Feedback/Interview pages can call it
+      saveInterviewResult, deleteInterview 
     }}>
       {children}
     </InterviewContext.Provider>

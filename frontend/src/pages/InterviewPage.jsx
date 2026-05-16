@@ -20,7 +20,14 @@ export default function InterviewPage() {
     difficulty
   } = useInterview();
   
-  const [hasStarted, setHasStarted] = useState(false);
+  const [hasStarted, setHasStarted] = useState(() => {
+    return sessionStorage.getItem('interviewHasStarted') === 'true';
+  });
+
+  useEffect(() => {
+    sessionStorage.setItem('interviewHasStarted', hasStarted);
+  }, [hasStarted]);
+
   const [status, setStatus] = useState('Ready to begin');
   const [finalAnswer, setFinalAnswer] = useState('');
   const [isSaving, setIsSaving] = useState(false);
