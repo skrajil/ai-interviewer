@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 const { generateNextQuestion } = require('./services/ai.service');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
@@ -8,6 +9,15 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+
+// 🛡️ THE RATE LIMITER: Prevent API Spam
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes timeframe
+  max: 30, // Limit each user to 30 requests per 15 minutes
+  message: { error: "You are asking questions too fast! Please take a deep breath and try again in a few minutes." },
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+});
 
 // 🚨 THE BOUNCER
 const allowedOrigins = [
@@ -27,6 +37,8 @@ app.use(cors({
 
 // SECURITY FIX: Limit incoming request size so hackers can't send 10GB payloads
 app.use(express.json({ limit: '5mb' }));
+// Apply the rate limiter to all API routes
+app.use('/api', apiLimiter);
 
 app.post('/api/interview/next', async (req, res) => {
   try {
