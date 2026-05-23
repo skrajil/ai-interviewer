@@ -10,6 +10,35 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// 1. Import Firebase Admin
+const admin = require("firebase-admin");
+
+// 2. Initialize Firebase Admin using your secret key file
+const serviceAccount = require("./firebaseServiceAccount.json");
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
+
+// 3. THE BOUNCER: Authentication Middleware
+const verifyToken = async (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ error: "Unauthorized. No token provided." });
+  }
+
+  const idToken = authHeader.split('Bearer ')[1];
+
+  try {
+    const decodedToken = await admin.auth().verifyIdToken(idToken);
+    req.user = decodedToken; // Attach the user info to the request
+    next(); // Let them pass!
+  } catch (error) {
+    console.error("Token verification failed:", error);
+    return res.status(401).json({ error: "Unauthorized. Invalid token." });
+  }
+};
+
 // 🛡️ THE RATE LIMITER: Prevent API Spam
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes timeframe
@@ -40,7 +69,7 @@ app.use(express.json({ limit: '5mb' }));
 // Apply the rate limiter to all API routes
 app.use('/api', apiLimiter);
 
-app.post('/api/interview/next', async (req, res) => {
+app.post('/api/interview/next', verifyToken, async (req, res) => {
   try {
     const { 
         role = "General Candidate", 
@@ -76,7 +105,7 @@ app.post('/api/interview/next', async (req, res) => {
 });
 
 
-app.post('/api/evaluate', async (req, res) => {
+app.post('/api/evaluate', verifyToken, async (req, res) => {
   try {
     const { role, transcript } = req.body;
 
