@@ -4,8 +4,10 @@ import { Mic, Play, MicOff, Volume2, Loader2 } from 'lucide-react';
 import useSpeechToText from '../hooks/useSpeechToText';
 import useTextToSpeech from '../hooks/useTextToSpeech';
 import { useInterview } from '../context/InterviewContext';
+import { useAuth } from '../context/AuthContext';
 
 export default function InterviewPage() {
+  const {currentUser} = useAuth();
   const navigate = useNavigate();
   const videoRef = useRef(null);
   
@@ -98,9 +100,13 @@ export default function InterviewPage() {
     addInteraction(currentQuestion, text);
 
     try {
+      const token = await currentUser.getIdToken();
       const response = await fetch(import.meta.env.VITE_API_URL + '/api/interview/next', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify({ 
           role, 
           resumeText, 
@@ -134,7 +140,10 @@ export default function InterviewPage() {
       
       const response = await fetch(import.meta.env.VITE_API_URL + '/api/evaluate', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${await currentUser.getIdToken()}`
+         },
         body: JSON.stringify({ 
           role: role, 
           transcript: sessionHistory 

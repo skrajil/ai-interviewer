@@ -13,8 +13,15 @@ const PORT = process.env.PORT || 5000;
 // 1. Import Firebase Admin
 const admin = require("firebase-admin");
 
-// 2. Initialize Firebase Admin using your secret key file
-const serviceAccount = require("./firebaseServiceAccount.json");
+// 2. Initialize Firebase securely (Local vs Production)
+let serviceAccount;
+if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+  // If running on Render, use the secret environment variable
+  serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+} else {
+  // If running locally on your computer, use the physical file
+  serviceAccount = require("./firebaseServiceAccount.json");
+}
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });
