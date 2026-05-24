@@ -34,7 +34,7 @@ export default function InterviewPage() {
   const [finalAnswer, setFinalAnswer] = useState('');
   const [isSaving, setIsSaving] = useState(false);
 
-  // 🚨 NEW STATES FOR PRE-FETCHING
+  //  NEW STATES FOR PRE-FETCHING
   const [preloadedQuestion, setPreloadedQuestion] = useState("");
   const [isPreparing, setIsPreparing] = useState(true);
 
@@ -56,7 +56,7 @@ export default function InterviewPage() {
     }
   }, [role, navigate]);
 
-  // 🚨 2. SECRETLY PRE-FETCH THE FIRST QUESTION ON PAGE LOAD
+  //  2. SECRETLY PRE-FETCH THE FIRST QUESTION ON PAGE LOAD
   useEffect(() => {
     if (!currentQuestion && role && !preloadedQuestion) {
       const fetchFirstQuestion = async () => {
@@ -170,7 +170,7 @@ export default function InterviewPage() {
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6 font-sans overflow-hidden text-white relative">
       
-      {/* 🚨 THE UPGRADED POPUP OVERLAY */}
+      {/*  THE UPGRADED POPUP OVERLAY */}
       {!hasStarted && (
         <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md px-6">
           <div className="bg-[#111] border border-white/10 p-10 rounded-4xl max-w-md w-full text-center shadow-2xl relative overflow-hidden">
@@ -218,7 +218,7 @@ export default function InterviewPage() {
 
       {/* Main Interviewer Stage */}
       <div className="flex flex-col items-center justify-center flex-1 w-full max-w-4xl pb-32">
-        {/* 🚨 UPGRADED: Siri-Style AI Avatar / Orb */}
+        {/*  UPGRADED: Siri-Style AI Avatar / Orb */}
         <div className="relative mb-16 flex items-center justify-center">
           {/* Outer Ripple 2 (Only pulses when AI speaks) */}
           <div className={`absolute w-64 h-64 rounded-full border border-blue-500/20 transition-all duration-1000 ${

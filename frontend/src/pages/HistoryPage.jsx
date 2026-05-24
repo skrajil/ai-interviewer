@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-// 🚨 Added useInterview
+//  Added useInterview
 import { useInterview } from '../context/InterviewContext';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../firebase';
-// 🚨 Added Trash2 icon
+//  Added Trash2 icon
 import { Clock, Trophy, ArrowRight, Home, Bot, Trash2 } from 'lucide-react';
 
 export default function HistoryPage() {
@@ -13,7 +13,7 @@ export default function HistoryPage() {
   const [loading, setLoading] = useState(true);
   const { currentUser } = useAuth();
   
-  // 🚨 Grab the new delete function from context
+  //  Grab the new delete function from context
   const { deleteInterview } = useInterview(); 
   const navigate = useNavigate();
 
@@ -33,7 +33,7 @@ export default function HistoryPage() {
           ...doc.data()
         }));
 
-        // 🚨 Sort so the newest interviews show up at the top!
+        //  Sort so the newest interviews show up at the top!
         historyData.sort((a, b) => b.createdAt?.toMillis() - a.createdAt?.toMillis());
         
         setInterviews(historyData);
@@ -47,9 +47,9 @@ export default function HistoryPage() {
     fetchHistory();
   }, [currentUser]);
 
-  // 🚨 The Optimistic Delete Handler
+  //  The Optimistic Delete Handler
   const handleDelete = async (e, id) => {
-    e.stopPropagation(); // 🚨 Stops the click from triggering the card's navigate()!
+    e.stopPropagation(); //  Stops the click from triggering the card's navigate()!
     
     const success = await deleteInterview(id);
     if (success) {
@@ -125,13 +125,13 @@ export default function HistoryPage() {
                   {interview.summary}
                 </p>
                 
-                {/* 🚨 Bottom Row: View Feedback + Trash Can */}
+                {/*  Bottom Row: View Feedback + Trash Can */}
                 <div className="flex items-center justify-between mt-auto pt-2">
                   <div className="flex items-center text-primary text-sm font-bold gap-2">
                     View Full Feedback <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                   </div>
                   
-                  {/* 🚨 The Delete Button */}
+                  {/*  The Delete Button */}
                   <button 
                     onClick={(e) => handleDelete(e, interview.id)}
                     className="p-2 bg-red-500/10 text-red-400 rounded-full opacity-0 group-hover:opacity-100 transition-all hover:bg-red-500 hover:text-white"

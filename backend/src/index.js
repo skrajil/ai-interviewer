@@ -46,7 +46,7 @@ const verifyToken = async (req, res, next) => {
   }
 };
 
-// 🛡️ THE RATE LIMITER: Prevent API Spam
+//  THE RATE LIMITER: Prevent API Spam
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes timeframe
   max: 30, // Limit each user to 30 requests per 15 minutes
@@ -55,7 +55,7 @@ const apiLimiter = rateLimit({
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
 });
 
-// 🚨 THE BOUNCER
+//  THE BOUNCER
 const allowedOrigins = [
   'http://localhost:5173', 
   'https://ai-interviewer-ashy-beta.vercel.app' 
@@ -75,6 +75,12 @@ app.use(cors({
 app.use(express.json({ limit: '5mb' }));
 // Apply the rate limiter to all API routes
 app.use('/api', apiLimiter);
+
+// THE ALARM CLOCK: Keeps the Render server awake
+app.get('/api/wakeup', (req, res) => {
+  console.log(" Wakeup ping received!");
+  return res.status(200).json({ message: "Server is awake and ready." });
+});
 
 app.post('/api/interview/next', verifyToken, async (req, res) => {
   try {
@@ -102,7 +108,7 @@ app.post('/api/interview/next', verifyToken, async (req, res) => {
     return res.status(200).json(aiResponse);
 
   } catch (error) {
-    console.error("❌ SERVER ERROR (Next Question):", error);
+    console.error(" SERVER ERROR (Next Question):", error);
     // EMERGENCY FALLBACK: If Gemini crashes, send a hardcoded question so the UI doesn't freeze
     return res.status(200).json({ 
         question: "We encountered a network issue. Could you please tell me more about your experience with this tech stack?",
@@ -156,7 +162,7 @@ app.post('/api/evaluate', verifyToken, async (req, res) => {
         const evaluation = JSON.parse(cleanJson);
         return res.status(200).json(evaluation);
     } catch (parseError) {
-        console.error("❌ Gemini returned invalid JSON:", responseText);
+        console.error(" Gemini returned invalid JSON:", responseText);
         // EMERGENCY FALLBACK: If Gemini messes up the JSON, send a default passing score so the UI doesn't crash
         return res.status(200).json({
             score: 75,
@@ -167,9 +173,9 @@ app.post('/api/evaluate', verifyToken, async (req, res) => {
     }
 
   } catch (error) {
-    console.error("❌ SERVER ERROR (Evaluation):", error);
+    console.error(" SERVER ERROR (Evaluation):", error);
     return res.status(500).json({ error: "Failed to evaluate interview" });
   }
 });
 
-app.listen(PORT, () => console.log(`🚀 Backend running on port ${PORT}`));
+app.listen(PORT, () => console.log(` Backend running on port ${PORT}`));

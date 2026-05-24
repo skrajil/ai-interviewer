@@ -133,7 +133,6 @@ export default function FeedbackPage() {
               </ul>
             </div>
           </div>
-          {/* ... existing strengths and weaknesses grid above ... */}
 
           {/* NEW: Action Plan / Retention CTA */}
           <div className="mt-4 bg-linear-to-r from-blue-600/10 to-purple-600/10 backdrop-blur-xl border border-blue-500/20 rounded-3xl p-8 shadow-2xl relative overflow-hidden">

@@ -78,7 +78,7 @@ export const InterviewProvider = ({ children }) => {
 
       console.log("Interview archived successfully! ID:", docRef.id);
       
-      // 🚨 NEW: Wipe the temporary memory clean so the next interview starts fresh!
+      //  NEW: Wipe the temporary memory clean so the next interview starts fresh!
       sessionStorage.clear();
 
       return docRef.id;

@@ -7,6 +7,14 @@ import {
 import { useAuth } from '../context/AuthContext'; 
 
 export default function LandingPage() {
+
+  //  Silently wake up the backend while the user reads the page
+  useEffect(() => {
+    fetch(import.meta.env.VITE_API_URL + '/api/wakeup')
+      .then(res => console.log("Backend is awake!"))
+      .catch(err => console.error("Wakeup ping failed", err));
+  }, []);
+
   const navigate = useNavigate();
   const { loginWithGoogle,
     signupWithEmail,
@@ -150,7 +158,7 @@ export default function LandingPage() {
           Get instant feedback, analyze your stress levels, and perfect your pitch.
         </p>
         
-        {/* 🚨 This now ALWAYS goes to setup page! */}
+        {/*  This now ALWAYS goes to setup page! */}
         <button 
           onClick={() => navigate('/setup')}
           className="group relative inline-flex items-center justify-center gap-3 px-8 py-4 bg-primary text-white rounded-full text-lg font-bold transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_rgba(59,130,246,0.6)]"

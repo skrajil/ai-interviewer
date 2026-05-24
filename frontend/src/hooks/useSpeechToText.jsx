@@ -28,7 +28,7 @@ const useSpeechToText = (onSilenceDetected) => {
     recognition.lang = 'en-US';
 
     recognition.onstart = () => {
-      console.log("🎤 Mic started");
+      console.log(" Mic started");
       isListeningRef.current = true;
     };
 
@@ -49,7 +49,7 @@ const useSpeechToText = (onSilenceDetected) => {
       // Our custom 4-second silence timer
       silenceTimerRef.current = setTimeout(() => {
         if (transcriptRef.current.trim() !== '' && !isProcessingRef.current) {
-          console.log("⏱️ 4 seconds silence hit! Submitting...");
+          console.log(" 4 seconds silence hit! Submitting...");
           isProcessingRef.current = true; // Lock it down
           onSilenceDetected(transcriptRef.current.trim());
           stopListening();
@@ -58,7 +58,7 @@ const useSpeechToText = (onSilenceDetected) => {
     };
 
     recognition.onend = () => {
-      console.log("🛑 Mic ended by browser");
+      console.log(" Mic ended by browser");
       clearTimeout(silenceTimerRef.current);
 
       // If we are already processing an answer, just let it close peacefully
@@ -66,7 +66,7 @@ const useSpeechToText = (onSilenceDetected) => {
 
       // Chrome killed the mic early! Let's check if the user actually said something.
       if (isListeningRef.current && transcriptRef.current.trim() !== '') {
-        console.log("🚀 Browser closed mic early, but we have text. Submitting to AI!");
+        console.log(" Browser closed mic early, but we have text. Submitting to AI!");
         isProcessingRef.current = true;
         onSilenceDetected(transcriptRef.current.trim());
         setIsListening(false);
@@ -74,7 +74,7 @@ const useSpeechToText = (onSilenceDetected) => {
       } 
       // Chrome killed the mic early and they said NOTHING. Force restart it.
       else if (isListeningRef.current && transcriptRef.current.trim() === '') {
-        console.log("🔄 Browser killed mic, but transcript is empty. Restarting...");
+        console.log(" Browser killed mic, but transcript is empty. Restarting...");
         try {
           recognitionRef.current.start();
         } catch (e) {
@@ -88,7 +88,7 @@ const useSpeechToText = (onSilenceDetected) => {
     };
 
     recognition.onerror = (event) => {
-      console.error('❌ Speech recognition error:', event.error);
+      console.error(' Speech recognition error:', event.error);
       setIsListening(false);
       isListeningRef.current = false;
       clearTimeout(silenceTimerRef.current);
@@ -105,7 +105,7 @@ const useSpeechToText = (onSilenceDetected) => {
   }, [onSilenceDetected]);
 
   const startListening = () => {
-    console.log("▶️ Starting speech recognition");
+    console.log(" Starting speech recognition");
     setTranscript('');
     transcriptRef.current = '';
     isProcessingRef.current = false; // Unlock processing

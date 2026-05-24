@@ -5,7 +5,7 @@ import { useInterview } from '../context/InterviewContext';
 import { 
   Briefcase, Code, Database, Layout, Search, 
   Play, History, LogOut, Bot, User, FileText, X, Mail, Lock, Loader2,
-  BarChart // 🚨 Added this icon for the difficulty section
+  BarChart //  Added this icon for the difficulty section
 } from 'lucide-react';
 
 export default function SetupPage() {
@@ -13,14 +13,14 @@ export default function SetupPage() {
   
   const { currentUser, logout, loginWithEmail, signupWithEmail, loginWithGoogle } = useAuth();
   
-  // 🚨 Grab setDifficulty from Context
+  //  Grab setDifficulty from Context
   const { setRole, setResumeText, setDifficulty } = useInterview(); 
   
   const [selectedRole, setSelectedRole] = useState('');
   const [customRole, setCustomRole] = useState('');
   const [resumeInput, setResumeInput] = useState(''); 
   
-  // 🚨 Local state for Difficulty
+  //  Local state for Difficulty
   const [localDifficulty, setLocalDifficulty] = useState('Mid-Level');
 
   // Modal Auth State
@@ -80,7 +80,7 @@ export default function SetupPage() {
     const finalRole = customRole || selectedRole;
     if (!finalRole) return alert("Please select or type a role!");
 
-    // 🚨 Save all three settings to Context before navigating
+    //  Save all three settings to Context before navigating
     setRole(finalRole); 
     setResumeText(resumeInput); 
     setDifficulty(localDifficulty);
@@ -217,7 +217,7 @@ export default function SetupPage() {
             </p>
           </div>
 
-          {/* 🚨 REDESIGNED ROLE SECTION 🚨 */}
+          {/*  REDESIGNED ROLE SECTION  */}
           <div className="space-y-4">
             <h3 className="text-sm font-bold tracking-widest uppercase text-white/40 ml-1">
               1. What role are you interviewing for?
@@ -265,7 +265,7 @@ export default function SetupPage() {
             </div>
           </div>
 
-          {/* 🚨 NEW DIFFICULTY SECTION 🚨 */}
+          {/*  NEW DIFFICULTY SECTION  */}
           <div className="space-y-4 pt-4 border-t border-white/10">
             <h3 className="text-sm font-bold tracking-widest uppercase text-white/40 ml-1 flex items-center gap-2">
               <BarChart size={16} /> 2. Select Difficulty Level
@@ -287,7 +287,7 @@ export default function SetupPage() {
             </div>
           </div>
 
-          {/* 🚨 UPDATED RESUME SECTION TO STEP 3 🚨 */}
+          {/*  UPDATED RESUME SECTION TO STEP 3  */}
           <div className="space-y-4 pt-4 border-t border-white/10">
             <h3 className="text-sm font-bold tracking-widest uppercase text-white/40 ml-1 flex items-center gap-2">
               <FileText size={16} /> 3. Paste Your Resume (preferable)
