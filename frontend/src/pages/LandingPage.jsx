@@ -192,8 +192,21 @@ export default function LandingPage() {
       {/* Author Section */}
       <section className="w-full max-w-4xl mx-auto py-32 px-6 relative z-10">
         <div className="text-center mb-12">
-          <h2 className="text-sm font-bold uppercase tracking-[0.3em] text-primary mb-2">The Architect</h2>
-          <h3 className="text-4xl font-bold">Built by  sK rAjIl iSlAm</h3>
+          <h2 className="text-sm font-bold uppercase tracking-[0.3em] text-blue-500 mb-2">
+            The Architect
+          </h2>
+          <h3 className="text-4xl font-bold text-white flex items-center justify-center gap-3">
+            Built by{' '}
+            <a 
+              href="https://github.com/skrajil" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="relative inline-block text-white transition-colors hover:text-blue-400 group"
+            >
+              SK Rajil Islam
+              <span className="absolute -bottom-2 left-0 w-0 h-[3px] bg-blue-500 transition-all duration-300 group-hover:w-full"></span>
+            </a>
+          </h3>
         </div>
 
         <div className="bg-card/80 backdrop-blur-xl border border-white/10 rounded-[3rem] p-8 md:p-12 flex flex-col md:flex-row items-center gap-12 relative overflow-hidden">
