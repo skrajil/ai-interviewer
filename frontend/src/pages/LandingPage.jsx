@@ -204,7 +204,7 @@ export default function LandingPage() {
               className="relative inline-block text-white transition-colors hover:text-blue-400 group"
             >
               SK Rajil Islam
-              <span className="absolute -bottom-2 left-0 w-0 h-[3px] bg-blue-500 transition-all duration-300 group-hover:w-full"></span>
+              <span className="absolute -bottom-2 left-0 w-0 h-0.75 bg-blue-500 transition-all duration-300 group-hover:w-full"></span>
             </a>
           </h3>
         </div>
